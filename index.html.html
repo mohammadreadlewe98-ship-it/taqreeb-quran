@@ -464,7 +464,8 @@ function getExamStatus() {
 <script>
 const TEACHER_PASS = "000999";
 const STORAGE_KEY = "taqreeb_script_url_v2";
-let scriptUrl = localStorage.getItem(STORAGE_KEY) || '';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbyn9WT-tP6SLnz8fwBCMm5GZ2vz9XbSNChhVA-v2kHfNCcCSMUHY-I-9DPjyyhMEls_iA/exec';
+localStorage.setItem(STORAGE_KEY, scriptUrl);
 let examEnabled = true;
 let currentStudent = '';
 let timerInterval = null;
