@@ -61,6 +61,9 @@ input,textarea,select{font-family:var(--font-body);}
 .timer-display{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;color:var(--color-primary);}
 .timer-display.warning{color:var(--color-error);animation:pulse 1s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.timer-sync-badge{font-size:11px;background:var(--color-primary-light);color:var(--color-primary);padding:2px 8px;border-radius:10px;border:1px solid #a8d8be;}
+.timer-sync-badge.synced{background:var(--color-success-light);color:var(--color-success);}
+.timer-sync-badge.error{background:var(--color-error-light);color:var(--color-error);}
 .progress-bar-container{height:4px;background:var(--color-divider);}
 .progress-bar-fill{height:100%;background:linear-gradient(90deg,#1a6b3c,#b8860b);transition:width 1s linear;}
 .exam-page{flex:1;display:flex;flex-direction:column;}
@@ -134,7 +137,7 @@ input,textarea,select{font-family:var(--font-body);}
 .step-badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--color-primary);color:white;border-radius:50%;font-size:13px;font-weight:700;flex-shrink:0;}
 .instruction-steps{list-style:none;display:flex;flex-direction:column;gap:12px;}
 .instruction-steps li{display:flex;align-items:flex-start;gap:12px;font-size:14px;line-height:1.6;}
-.code-block{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:var(--radius-md);font-family:monospace;font-size:12px;direction:ltr;text-align:left;margin:8px 0;overflow-x:auto;white-space:pre-wrap;word-break:break-all;}
+.code-block{background:#1e1e1e;color:#d4d4d4;padding:14px 16px;border-radius:var(--radius-md);font-family:monospace;font-size:11.5px;direction:ltr;text-align:left;margin:8px 0;overflow-x:auto;white-space:pre-wrap;word-break:break-all;}
 .copy-btn{background:var(--color-gold-light);color:var(--color-gold);border:1px solid var(--color-gold);padding:4px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;}
 .copy-btn:hover{background:var(--color-gold);color:white;}
 .results-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
@@ -152,21 +155,6 @@ input,textarea,select{font-family:var(--font-body);}
 .score-badge.low{background:var(--color-error-light);color:var(--color-error);}
 .btn-refresh{background:var(--color-primary-light);color:var(--color-primary);border:1px solid #a8d8be;padding:8px 18px;border-radius:var(--radius-md);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
 .btn-refresh:hover{background:var(--color-primary);color:white;}
-.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
-.modal-overlay.open{display:flex;}
-.modal-box{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:32px;max-width:700px;width:100%;box-shadow:var(--shadow-lg);max-height:80vh;overflow-y:auto;}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
-.modal-header h3{font-family:var(--font-display);font-size:22px;}
-.btn-close{width:36px;height:36px;border-radius:50%;background:var(--color-surface);border:1px solid var(--color-border);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.btn-close:hover{background:var(--color-error-light);color:var(--color-error);}
-.detail-row{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:var(--radius-md);margin-bottom:8px;}
-.detail-row.correct-ans{background:var(--color-success-light);}
-.detail-row.wrong-ans{background:var(--color-error-light);}
-.detail-row.unanswered{background:#f0ece4;}
-.detail-row-icon{font-size:20px;flex-shrink:0;}
-.detail-row-content{flex:1;}
-.detail-row-q{font-size:14px;font-weight:600;margin-bottom:4px;}
-.detail-row-info{font-size:13px;color:var(--color-text-muted);}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#0d3d1e;color:white;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;z-index:999;transition:transform 0.3s ease;box-shadow:var(--shadow-lg);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .ornament{text-align:center;color:var(--color-gold);font-size:22px;margin:16px 0;opacity:0.6;}
@@ -174,9 +162,15 @@ input,textarea,select{font-family:var(--font-body);}
 .empty-state .icon{font-size:48px;margin-bottom:16px;opacity:0.5;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:32px;height:32px;border:3px solid var(--color-primary-light);border-top-color:var(--color-primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
-.loading-overlay{position:fixed;inset:0;background:rgba(250,248,243,0.9);display:flex;align-items:center;justify-content:center;z-index:500;flex-direction:column;gap:16px;backdrop-filter:blur(4px);}
+.loading-overlay{position:fixed;inset:0;background:rgba(250,248,243,0.95);display:flex;align-items:center;justify-content:center;z-index:500;flex-direction:column;gap:16px;backdrop-filter:blur(4px);}
 .loading-overlay .spinner-big{width:48px;height:48px;border:4px solid var(--color-primary-light);border-top-color:var(--color-primary);border-radius:50%;animation:spin 0.8s linear infinite;}
 .loading-overlay p{font-size:16px;color:var(--color-text-muted);}
+/* Expired overlay */
+.expired-overlay{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;}
+.expired-overlay.show{display:flex;}
+.expired-box{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:40px;max-width:420px;width:100%;text-align:center;box-shadow:var(--shadow-lg);}
+.expired-box h2{font-family:var(--font-display);font-size:26px;margin-bottom:12px;color:var(--color-error);}
+.expired-box p{color:var(--color-text-muted);line-height:1.7;margin-bottom:20px;}
 @media(max-width:768px){
   .teacher-body{flex-direction:column;}
   .teacher-sidebar{width:100%;border-left:none;border-bottom:1px solid var(--color-divider);padding:10px;display:flex;flex-direction:row;overflow-x:auto;}
@@ -197,6 +191,17 @@ input,textarea,select{font-family:var(--font-body);}
   <p id="loading-msg">جاري التحميل...</p>
 </div>
 
+<!-- EXPIRED OVERLAY (when time runs out from server) -->
+<div class="expired-overlay" id="expired-overlay">
+  <div class="expired-box">
+    <div style="font-size:56px;margin-bottom:12px;">⏰</div>
+    <h2>انتهى وقت الاختبار!</h2>
+    <p>لقد مضت 30 دقيقة على بدء اختبارك. تم إرسال إجاباتك تلقائياً.</p>
+    <div id="expired-score" style="margin:16px 0;font-size:18px;font-weight:700;color:var(--color-primary);"></div>
+    <button class="btn-primary" onclick="goHome()">العودة للصفحة الرئيسية</button>
+  </div>
+</div>
+
 <!-- VIEW: LANDING -->
 <div id="view-landing" class="view active">
   <div class="app-header">
@@ -208,7 +213,7 @@ input,textarea,select{font-family:var(--font-body);}
       </svg>
       <div class="logo-text"><h1>تقريب القرآن</h1><p>منصة الاختبارات القرآنية</p></div>
     </div>
-    <div class="header-badge" id="exam-status-badge">⏳ جاري التحميل</div>
+    <div class="header-badge" id="exam-status-badge">⏳ جاري التحقق</div>
   </div>
   <div class="landing-container" id="landing-main">
     <div class="landing-card">
@@ -251,7 +256,10 @@ input,textarea,select{font-family:var(--font-body);}
   </div>
   <div class="exam-topbar">
     <div class="student-name-badge">👤 <span id="exam-student-name">—</span></div>
-    <div class="timer-display" id="timer-display">⏱️ <span id="timer-text">30:00</span></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="timer-sync-badge" id="sync-badge">🔄 مزامنة</span>
+      <div class="timer-display" id="timer-display">⏱️ <span id="timer-text">30:00</span></div>
+    </div>
   </div>
   <div class="progress-bar-container">
     <div class="progress-bar-fill" id="progress-bar" style="width:100%"></div>
@@ -319,21 +327,17 @@ input,textarea,select{font-family:var(--font-body);}
       <div class="sidebar-nav-item" onclick="switchTab('tab-results')" data-tab="tab-results">📊 <span>نتائج الطلاب</span></div>
     </div>
     <div class="teacher-content">
-
       <!-- Tab: Setup -->
       <div class="tab-pane active" id="tab-setup">
-        <div class="section-title">⚙️ إعداد الربط مع Google Sheets</div>
+        <div class="section-title">⚙️ كود Apps Script المحدَّث</div>
         <div class="setup-card" style="background:var(--color-warning-light);border-color:#e8c870;">
-          <h3 style="color:var(--color-warning);">⚠️ مهم — استخدم الكود الجديد</h3>
-          <p style="font-size:14px;line-height:1.7;">إذا كنت قد نشرت Apps Script سابقاً، يجب <strong>استبدال الكود القديم بالكود الجديد أدناه</strong> ثم نشر deployment جديد. الكود الجديد يحل مشكلة CORS ويستخدم GET فقط.</p>
+          <h3 style="color:var(--color-warning);">⚠️ تحديث مطلوب — كود جديد بميزة الوقت الحقيقي</h3>
+          <p style="font-size:14px;line-height:1.7;">يجب استبدال كود Apps Script القديم بهذا الكود الجديد الذي يدعم <strong>تتبع وقت البدء الحقيقي</strong> لكل طالب عبر الشيت. بعد النشر، أدخل الرابط الجديد أدناه.</p>
         </div>
         <div class="setup-card">
-          <h3>الخطوة 1: كود Apps Script (النسخة المحدّثة)</h3>
-          <ol class="instruction-steps">
-            <li><span class="step-badge">1</span><div>افتح الشيت ← <strong>Extensions → Apps Script</strong></div></li>
-            <li><span class="step-badge">2</span><div>احذف الكود القديم كاملاً والصق هذا:</div></li>
-          </ol>
-          <div class="code-block" id="apps-script-code">const SHEET_ID = "1kYDWZtCXWhfshldODMtOMxIKKoqsCXPZthYsKFxZqXU";
+          <h3>كود Apps Script الكامل (انسخه واستبدل القديم)</h3>
+          <div class="code-block" id="apps-script-code">const SHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
+const EXAM_DURATION_MS = 30 * 60 * 1000; // 30 minutes
 const PASS = "000999";
 
 function doGet(e) {
@@ -341,59 +345,127 @@ function doGet(e) {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   let result;
 
-  if (action === "getQuestions") {
-    const sheet = ss.getSheetByName("Questions");
-    const data = sheet.getDataRange().getValues();
-    const questions = [];
-    for (let i = 1; i < data.length; i++) {
-      if (!data[i][0]) continue;
-      const opts = [data[i][1],data[i][2],data[i][3],data[i][4]].filter(o => o !== "" && o !== null && o !== undefined);
-      const correctLetter = String(data[i][5]).trim().toUpperCase();
-      const correctIndex = ["A","B","C","D","E","F"].indexOf(correctLetter);
-      questions.push({ text: String(data[i][0]), options: opts, correct: correctIndex >= 0 ? correctIndex : 0 });
-    }
-    result = { status:"ok", questions, examEnabled: getExamStatus() };
+  try {
+    if (action === "getQuestions") {
+      const sheet = ss.getSheetByName("Questions");
+      const data = sheet ? sheet.getDataRange().getValues() : [];
+      const questions = [];
+      for (let i = 1; i < data.length; i++) {
+        if (!data[i][0]) continue;
+        const opts = [data[i][1],data[i][2],data[i][3],data[i][4],data[i][5],data[i][6]]
+          .filter(o => o !== "" && o !== null && o !== undefined);
+        const correctLetter = String(data[i][7]||data[i][5]).trim().toUpperCase();
+        const correctIndex = ["A","B","C","D","E","F"].indexOf(correctLetter);
+        questions.push({ text: String(data[i][0]), options: opts, correct: correctIndex >= 0 ? correctIndex : 0 });
+      }
+      result = { status:"ok", questions, examEnabled: getExamStatus() };
 
-  } else if (action === "getResults") {
-    const sheet = ss.getSheetByName("Results");
-    const data = sheet.getDataRange().getValues();
-    const results = [];
-    for (let i = 1; i < data.length; i++) {
-      if (!data[i][0]) continue;
-      results.push({ name:data[i][0], total:data[i][1], correct:data[i][2], score:data[i][3], startTime:data[i][4], endTime:data[i][5] });
-    }
-    result = { status:"ok", results };
+    } else if (action === "startSession") {
+      const name = e.parameter.name || "";
+      if (!name) { result = { status:"error", message:"No name" }; }
+      else if (!getExamStatus()) { result = { status:"disabled" }; }
+      else {
+        const sheet = getOrCreateSheet(ss, "Sessions", ["الاسم","وقت البداية (ms)","منتهي"]);
+        const now = Date.now();
+        // Check if session exists and not expired
+        const data = sheet.getDataRange().getValues();
+        let found = false;
+        for (let i = 1; i < data.length; i++) {
+          if (String(data[i][0]).trim() === name.trim()) {
+            const startMs = Number(data[i][1]);
+            const expired = data[i][2] === true || data[i][2] === "TRUE";
+            if (!expired && (now - startMs) < EXAM_DURATION_MS) {
+              result = { status:"ok", startTime: startMs, serverNow: now, remaining: Math.max(0, EXAM_DURATION_MS - (now - startMs)) };
+              found = true;
+            } else if (expired || (now - startMs) >= EXAM_DURATION_MS) {
+              result = { status:"expired" };
+              found = true;
+            }
+            break;
+          }
+        }
+        if (!found) {
+          sheet.appendRow([name, now, false]);
+          result = { status:"ok", startTime: now, serverNow: now, remaining: EXAM_DURATION_MS };
+        }
+      }
 
-  } else if (action === "getStatus") {
-    result = { status:"ok", examEnabled: getExamStatus() };
+    } else if (action === "checkTime") {
+      const name = e.parameter.name || "";
+      const sheet = ss.getSheetByName("Sessions");
+      if (!sheet) { result = { status:"error" }; }
+      else {
+        const data = sheet.getDataRange().getValues();
+        const now = Date.now();
+        let found = false;
+        for (let i = 1; i < data.length; i++) {
+          if (String(data[i][0]).trim() === name.trim()) {
+            const startMs = Number(data[i][1]);
+            const expired = data[i][2] === true || data[i][2] === "TRUE";
+            const remaining = Math.max(0, EXAM_DURATION_MS - (now - startMs));
+            result = { status: (expired || remaining === 0) ? "expired" : "ok", remaining, serverNow: now };
+            found = true;
+            break;
+          }
+        }
+        if (!found) result = { status:"error", message:"Session not found" };
+      }
 
-  } else if (action === "saveResult") {
-    // Save via GET to avoid CORS
-    const name = e.parameter.name || "";
-    const total = e.parameter.total || 0;
-    const correct = e.parameter.correct || 0;
-    const score = e.parameter.score || "0%";
-    const startTime = e.parameter.startTime || "";
-    const endTime = e.parameter.endTime || "";
-    if (!name) { result = { status:"error", message:"No name provided" }; }
-    else {
+    } else if (action === "saveResult") {
+      const name = e.parameter.name || "";
+      const total = e.parameter.total || 0;
+      const correct = e.parameter.correct || 0;
+      const score = e.parameter.score || "0%";
+      const startTime = e.parameter.startTime || "";
+      const endTime = e.parameter.endTime || "";
+      if (!name) { result = { status:"error", message:"No name" }; }
+      else {
+        const resSheet = getOrCreateSheet(ss, "Results", ["الاسم","إجمالي الأسئلة","الإجابات الصحيحة","النتيجة","وقت البدء","وقت الانتهاء"]);
+        resSheet.appendRow([name, total, correct, score, startTime, endTime]);
+        // Mark session as done
+        const sessSheet = ss.getSheetByName("Sessions");
+        if (sessSheet) {
+          const data = sessSheet.getDataRange().getValues();
+          for (let i = 1; i < data.length; i++) {
+            if (String(data[i][0]).trim() === name.trim()) {
+              sessSheet.getRange(i+1, 3).setValue(true);
+              break;
+            }
+          }
+        }
+        result = { status:"ok" };
+      }
+
+    } else if (action === "getResults") {
       const sheet = ss.getSheetByName("Results");
-      sheet.appendRow([name, total, correct, score, startTime, endTime]);
-      result = { status:"ok", message:"Saved" };
-    }
+      if (!sheet) { result = { status:"ok", results:[] }; }
+      else {
+        const data = sheet.getDataRange().getValues();
+        const results = [];
+        for (let i = 1; i < data.length; i++) {
+          if (!data[i][0]) continue;
+          results.push({ name:data[i][0], total:data[i][1], correct:data[i][2], score:data[i][3], startTime:data[i][4], endTime:data[i][5] });
+        }
+        result = { status:"ok", results };
+      }
 
-  } else if (action === "toggleExam") {
-    const pass = e.parameter.pass || "";
-    if (pass !== PASS) { result = { status:"error", message:"Unauthorized" }; }
-    else {
-      const prop = PropertiesService.getScriptProperties();
-      const current = prop.getProperty("examEnabled") !== "false";
-      prop.setProperty("examEnabled", (!current).toString());
-      result = { status:"ok", examEnabled: !current };
-    }
+    } else if (action === "getStatus") {
+      result = { status:"ok", examEnabled: getExamStatus() };
 
-  } else {
-    result = { status:"error", message:"Unknown action" };
+    } else if (action === "toggleExam") {
+      const pass = e.parameter.pass || "";
+      if (pass !== PASS) { result = { status:"error", message:"Unauthorized" }; }
+      else {
+        const prop = PropertiesService.getScriptProperties();
+        const current = prop.getProperty("examEnabled") !== "false";
+        prop.setProperty("examEnabled", (!current).toString());
+        result = { status:"ok", examEnabled: !current };
+      }
+    } else {
+      result = { status:"error", message:"Unknown action" };
+    }
+  } catch(err) {
+    result = { status:"error", message: err.toString() };
   }
 
   return ContentService
@@ -402,18 +474,26 @@ function doGet(e) {
 }
 
 function getExamStatus() {
-  const prop = PropertiesService.getScriptProperties();
-  return prop.getProperty("examEnabled") !== "false";
+  return PropertiesService.getScriptProperties().getProperty("examEnabled") !== "false";
+}
+
+function getOrCreateSheet(ss, name, headers) {
+  let sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(headers);
+  }
+  return sheet;
 }</div>
           <button class="copy-btn" style="margin-top:8px;" onclick="copyCode()">📋 نسخ الكود</button>
           <ol class="instruction-steps" style="margin-top:16px;">
-            <li><span class="step-badge">3</span><div>اضغط <strong>Deploy → New deployment</strong> (لا تعدّل القديم، أنشئ جديداً)</div></li>
-            <li><span class="step-badge">4</span><div>النوع: <strong>Web app</strong> — Execute as: <strong>Me</strong> — Who has access: <strong>Anyone</strong></div></li>
-            <li><span class="step-badge">5</span><div>اضغط <strong>Deploy</strong> واقبل الصلاحيات، ثم انسخ الـ <strong>Web App URL</strong></div></li>
+            <li><span class="step-badge">1</span><div>في الشيت: <strong>Extensions → Apps Script</strong> — احذف الكود القديم والصق الجديد</div></li>
+            <li><span class="step-badge">2</span><div><strong>Deploy → New deployment</strong> — Web app — Anyone — Deploy</div></li>
+            <li><span class="step-badge">3</span><div>انسخ الـ Web App URL الجديد والصقه أدناه</div></li>
           </ol>
         </div>
         <div class="setup-card">
-          <h3>الخطوة 2: الصق الرابط الجديد</h3>
+          <h3>رابط Web App</h3>
           <input class="setup-input" type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfyc.../exec">
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button class="btn-save" onclick="testConnection()">🔌 اختبار الاتصال</button>
@@ -422,12 +502,11 @@ function getExamStatus() {
           <div id="connection-status"></div>
         </div>
         <div class="setup-card" id="current-url-card" style="display:none;">
-          <h3>✅ الربط الحالي</h3>
+          <h3>✅ الرابط الحالي (مثبَّت في الكود)</h3>
           <div class="code-block" id="current-url-display" style="font-size:12px;padding:10px;"></div>
-          <p style="font-size:13px;color:var(--color-text-muted);margin-top:10px;">⚠️ الرابط محفوظ في هذا المتصفح فقط.</p>
+          <p style="font-size:13px;color:var(--color-success);margin-top:8px;font-weight:600;">✅ هذا الرابط مثبَّت في الكود — يعمل لجميع الطلاب على كل الأجهزة</p>
         </div>
       </div>
-
       <!-- Tab: Results -->
       <div class="tab-pane" id="tab-results">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
@@ -440,39 +519,31 @@ function getExamStatus() {
           <div class="summary-card"><div class="s-num" id="sum-top">—</div><div class="s-lbl">أعلى درجة</div></div>
         </div>
         <div id="results-table-container">
-          <div class="empty-state"><div class="icon">📋</div><p>اضغط "تحديث النتائج" لجلب البيانات من Google Sheets</p></div>
+          <div class="empty-state"><div class="icon">📋</div><p>اضغط "تحديث النتائج" لجلب البيانات</p></div>
         </div>
       </div>
-
     </div>
-  </div>
-</div>
-
-<!-- DETAIL MODAL -->
-<div class="modal-overlay" id="detail-modal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3 id="modal-student-title">تفاصيل إجابات الطالب</h3>
-      <button class="btn-close" onclick="closeDetailModal()">✕</button>
-    </div>
-    <div id="modal-detail-content"></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== CONFIG (URL مثبَّت مباشرةً) =====
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXnN0T381LPK7DEimiMyMel8oLvezPTL38xY3eizFCbU6gUqzcFXYHipOAwUC6iMkafg/exec';
 const TEACHER_PASS = "000999";
-const STORAGE_KEY = "taqreeb_script_url_v2";
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbyn9WT-tP6SLnz8fwBCMm5GZ2vz9XbSNChhVA-v2kHfNCcCSMUHY-I-9DPjyyhMEls_iA/exec';
-localStorage.setItem(STORAGE_KEY, scriptUrl);
+const EXAM_DURATION = 30 * 60; // seconds
+
+let scriptUrl = SCRIPT_URL;
 let examEnabled = true;
 let currentStudent = '';
 let timerInterval = null;
-let timeLeft = 30 * 60;
+let syncInterval = null;
+let timeLeft = EXAM_DURATION;
 let studentAnswers = {};
 let loadedQuestions = [];
 let examStartTime = '';
+let sessionStartMs = 0;
 let cachedResults = [];
 
 function showToast(msg) {
@@ -491,9 +562,7 @@ function showLoading(msg) {
 }
 function hideLoading() { document.getElementById('global-loading').style.display = 'none'; }
 
-// ALL requests use GET to avoid CORS
 async function callScript(params) {
-  if (!scriptUrl) throw new Error('لم يتم إعداد الرابط');
   const url = scriptUrl + '?' + new URLSearchParams(params).toString();
   const res = await fetch(url);
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -501,16 +570,14 @@ async function callScript(params) {
 }
 
 async function init() {
-  if (scriptUrl) {
-    document.getElementById('script-url-input').value = scriptUrl;
-    updateCurrentUrlCard();
-    try {
-      showLoading('جاري التحقق من حالة الاختبار...');
-      const data = await callScript({ action: 'getStatus' });
-      examEnabled = data.examEnabled !== false;
-    } catch(e) { examEnabled = true; }
-    finally { hideLoading(); }
-  } else { hideLoading(); }
+  // Show current URL info
+  document.getElementById('script-url-input').value = scriptUrl;
+  document.getElementById('current-url-display').textContent = scriptUrl;
+  document.getElementById('current-url-card').style.display = 'block';
+  try {
+    const data = await callScript({ action: 'getStatus' });
+    examEnabled = data.examEnabled !== false;
+  } catch(e) { examEnabled = true; }
   updateExamStatusBadge();
 }
 
@@ -519,11 +586,11 @@ function updateExamStatusBadge() {
   const main = document.getElementById('landing-main');
   const dis = document.getElementById('landing-disabled');
   if (examEnabled) {
-    badge.style.background = 'rgba(26,107,60,0.2)';
+    badge.style.background = 'rgba(26,107,60,0.25)';
     badge.textContent = '🟢 الاختبار متاح';
     main.style.display = ''; dis.style.display = 'none';
   } else {
-    badge.style.background = 'rgba(139,26,26,0.2)';
+    badge.style.background = 'rgba(139,26,26,0.25)';
     badge.textContent = '🔴 الاختبار موقوف';
     main.style.display = 'none'; dis.style.display = '';
   }
@@ -539,26 +606,61 @@ async function startExam() {
   if (!examEnabled) { showToast('الاختبار موقوف حالياً'); return; }
   const name = document.getElementById('student-name-input').value.trim();
   if (!name) { showToast('⚠️ الرجاء إدخال اسمك أولاً'); return; }
-  showLoading('جاري تحميل الأسئلة...');
+  showLoading('جاري التحقق وتحميل الأسئلة...');
   try {
-    const data = await callScript({ action: 'getQuestions' });
-    if (data.status !== 'ok') throw new Error(data.message || 'خطأ');
-    if (!data.examEnabled) { hideLoading(); examEnabled = false; updateExamStatusBadge(); showToast('الاختبار موقوف'); return; }
-    if (!data.questions || data.questions.length === 0) { hideLoading(); showToast('⚠️ لا توجد أسئلة بعد'); return; }
-    loadedQuestions = data.questions;
+    // Start session + get questions in parallel
+    const [sessionData, questionsData] = await Promise.all([
+      callScript({ action: 'startSession', name }),
+      callScript({ action: 'getQuestions' })
+    ]);
+
+    if (sessionData.status === 'expired') {
+      hideLoading();
+      showToast('⏰ انتهى وقت اختبارك مسبقاً');
+      return;
+    }
+    if (sessionData.status === 'disabled') {
+      hideLoading(); examEnabled = false; updateExamStatusBadge();
+      showToast('الاختبار موقوف');
+      return;
+    }
+    if (questionsData.status !== 'ok' || !questionsData.questions?.length) {
+      hideLoading(); showToast('⚠️ لا توجد أسئلة بعد'); return;
+    }
+
+    loadedQuestions = questionsData.questions;
     currentStudent = name;
     studentAnswers = {};
-    timeLeft = 30 * 60;
-    examStartTime = new Date().toLocaleString('ar-SA');
+    sessionStartMs = sessionData.startTime;
+    examStartTime = new Date(sessionStartMs).toLocaleString('ar-SA');
+
+    // Calculate remaining time from server
+    const remaining = sessionData.remaining || 0;
+    timeLeft = Math.floor(remaining / 1000);
+
+    if (timeLeft <= 0) {
+      hideLoading();
+      showToast('⏰ انتهى وقت الاختبار');
+      return;
+    }
+
     hideLoading();
     switchView('view-exam');
     document.getElementById('exam-student-name').textContent = name;
+    setSyncBadge('synced', '✅ متزامن');
     renderExamQuestions();
     startTimer();
+    startSyncCheck();
   } catch(e) {
     hideLoading();
-    showToast('❌ خطأ في تحميل الأسئلة: ' + e.message);
+    showToast('❌ خطأ: ' + e.message);
   }
+}
+
+function setSyncBadge(state, text) {
+  const b = document.getElementById('sync-badge');
+  b.textContent = text;
+  b.className = 'timer-sync-badge ' + state;
 }
 
 function renderExamQuestions() {
@@ -602,9 +704,38 @@ function startTimer() {
   timerInterval = setInterval(() => {
     timeLeft--;
     updateTimerDisplay();
-    document.getElementById('progress-bar').style.width = (timeLeft/(30*60)*100)+'%';
-    if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(true); }
+    document.getElementById('progress-bar').style.width = (timeLeft/EXAM_DURATION*100)+'%';
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      clearInterval(syncInterval);
+      submitExam(true);
+    }
   }, 1000);
+}
+
+// Check with server every 60 seconds to sync time
+function startSyncCheck() {
+  clearInterval(syncInterval);
+  syncInterval = setInterval(async () => {
+    try {
+      setSyncBadge('', '🔄 مزامنة...');
+      const data = await callScript({ action: 'checkTime', name: currentStudent });
+      if (data.status === 'expired') {
+        clearInterval(timerInterval);
+        clearInterval(syncInterval);
+        await submitExam(true);
+      } else if (data.status === 'ok') {
+        const serverRemaining = Math.floor(data.remaining / 1000);
+        // Sync if difference > 10 seconds
+        if (Math.abs(timeLeft - serverRemaining) > 10) {
+          timeLeft = serverRemaining;
+        }
+        setSyncBadge('synced', '✅ متزامن');
+      }
+    } catch(e) {
+      setSyncBadge('error', '⚠️ لا اتصال');
+    }
+  }, 60000);
 }
 
 function updateTimerDisplay() {
@@ -619,22 +750,53 @@ function confirmSubmit() {
   const answered = Object.keys(studentAnswers).length;
   const total = loadedQuestions.length;
   if (answered < total && !confirm(`لديك ${total-answered} سؤال لم تجب عليه. هل تريد الإرسال الآن؟`)) return;
+  clearInterval(timerInterval);
+  clearInterval(syncInterval);
   submitExam(false);
 }
 
 async function submitExam(auto) {
   clearInterval(timerInterval);
-  let correct = 0, wrong = 0, unanswered = 0;
-  loadedQuestions.forEach((q, qi) => {
-    const ans = studentAnswers[qi];
-    if (ans === undefined) unanswered++;
-    else if (ans === q.correct) correct++;
-    else wrong++;
-  });
+  clearInterval(syncInterval);
+  let correct = 0;
+  loadedQuestions.forEach((q, qi) => { if (studentAnswers[qi] === q.correct) correct++; });
   const score = loadedQuestions.length > 0 ? Math.round((correct/loadedQuestions.length)*100) : 0;
+  const wrong = loadedQuestions.length - correct;
   const endTime = new Date().toLocaleString('ar-SA');
 
-  switchView('view-result');
+  if (auto) {
+    // Show expired overlay first
+    document.getElementById('expired-score').textContent = `نتيجتك: ${score}% (${correct} صحيح من ${loadedQuestions.length})`;
+    document.getElementById('expired-overlay').classList.add('show');
+  } else {
+    switchView('view-result');
+    showResultPage(correct, wrong, score);
+  }
+
+  const statusEl = document.getElementById('result-save-status');
+  try {
+    const data = await callScript({
+      action: 'saveResult',
+      name: currentStudent,
+      total: loadedQuestions.length,
+      correct,
+      score: score + '%',
+      startTime: examStartTime,
+      endTime
+    });
+    if (!auto) {
+      statusEl.textContent = data.status === 'ok' ? '✅ تم حفظ نتيجتك في سجل المعلم' : '⚠️ ' + (data.message||'خطأ');
+      statusEl.style.color = data.status === 'ok' ? 'var(--color-success)' : 'var(--color-warning)';
+    }
+  } catch(e) {
+    if (!auto) {
+      statusEl.textContent = '⚠️ لم يتم الحفظ — ' + e.message;
+      statusEl.style.color = 'var(--color-warning)';
+    }
+  }
+}
+
+function showResultPage(correct, wrong, score) {
   document.getElementById('result-student-name').textContent = currentStudent;
   document.getElementById('result-pct').textContent = score + '%';
   document.getElementById('result-correct').textContent = correct;
@@ -642,39 +804,17 @@ async function submitExam(auto) {
   document.getElementById('result-circle').style.setProperty('--pct', score+'%');
   const msgs = [[90,'ممتاز! أداء رائع 🌟'],[70,'جيد جداً، أحسنت 👍'],[50,'جيد، استمر في المراجعة 📖'],[0,'حاول مرة أخرى، لا تيأس 💪']];
   document.getElementById('result-msg').textContent = msgs.find(m => score >= m[0])[1];
-
-  const statusEl = document.getElementById('result-save-status');
-  statusEl.textContent = '⏳ جاري حفظ نتيجتك...';
-
-  try {
-    const data = await callScript({
-      action: 'saveResult',
-      name: currentStudent,
-      total: loadedQuestions.length,
-      correct: correct,
-      score: score + '%',
-      startTime: examStartTime,
-      endTime: endTime
-    });
-    if (data.status === 'ok') {
-      statusEl.textContent = '✅ تم حفظ نتيجتك في سجل المعلم';
-      statusEl.style.color = 'var(--color-success)';
-    } else {
-      statusEl.textContent = '⚠️ لم يتم الحفظ: ' + (data.message || 'خطأ');
-      statusEl.style.color = 'var(--color-warning)';
-    }
-  } catch(e) {
-    statusEl.textContent = '⚠️ لم يتم الحفظ — ' + e.message;
-    statusEl.style.color = 'var(--color-warning)';
-  }
+  document.getElementById('result-save-status').textContent = '⏳ جاري حفظ نتيجتك...';
 }
 
 function goHome() {
+  document.getElementById('expired-overlay').classList.remove('show');
   document.getElementById('student-name-input').value = '';
+  studentAnswers = {};
   switchView('view-landing');
 }
 
-// ===== TEACHER LOGIN =====
+// ===== TEACHER =====
 function showTeacherLogin() {
   document.getElementById('teacher-login-overlay').style.display = 'flex';
   document.getElementById('teacher-pass-input').value = '';
@@ -687,8 +827,7 @@ function doTeacherLogin() {
   if (document.getElementById('teacher-pass-input').value.trim() === TEACHER_PASS) {
     hideTeacherLogin();
     switchView('view-teacher');
-    updateCurrentUrlCard();
-    if (scriptUrl) document.getElementById('script-url-input').value = scriptUrl;
+    updateExamStatusBadge();
   } else {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('teacher-pass-input').value = '';
@@ -696,9 +835,7 @@ function doTeacherLogin() {
 }
 function logoutTeacher() { switchView('view-landing'); }
 
-// ===== TOGGLE EXAM — uses GET =====
 async function toggleExam() {
-  if (!scriptUrl) { showToast('⚠️ أعد ربط الشيت أولاً'); return; }
   try {
     showLoading('جاري تغيير حالة الاختبار...');
     const data = await callScript({ action: 'toggleExam', pass: TEACHER_PASS });
@@ -707,49 +844,29 @@ async function toggleExam() {
       examEnabled = data.examEnabled;
       updateExamStatusBadge();
       showToast(examEnabled ? '✅ تم تفعيل الاختبار' : '⏸ تم إيقاف الاختبار');
-    } else {
-      showToast('❌ ' + (data.message || 'خطأ'));
-    }
+    } else { showToast('❌ ' + (data.message||'خطأ')); }
   } catch(e) { hideLoading(); showToast('❌ ' + e.message); }
 }
 
-// ===== SETUP =====
 function saveScriptUrl() {
   const url = document.getElementById('script-url-input').value.trim();
   if (!url.includes('script.google.com')) { showToast('⚠️ الرابط غير صحيح'); return; }
-  scriptUrl = url;
-  localStorage.setItem(STORAGE_KEY, url);
-  updateCurrentUrlCard();
-  showToast('✅ تم حفظ الرابط');
+  showToast('ℹ️ الرابط مثبَّت في الكود — لا حاجة للحفظ. إذا تغيَّر الرابط أعد رفع الملف.');
 }
 
 async function testConnection() {
-  const url = document.getElementById('script-url-input').value.trim();
-  if (!url) { showToast('⚠️ أدخل الرابط أولاً'); return; }
+  const url = document.getElementById('script-url-input').value.trim() || scriptUrl;
   const statusEl = document.getElementById('connection-status');
   statusEl.innerHTML = '<div class="status-indicator loading">⏳ جاري الاختبار...</div>';
   try {
-    const testUrl = url + '?action=getStatus';
-    const res = await fetch(testUrl);
+    const res = await fetch(url + '?action=getStatus');
     const data = await res.json();
-    if (data.status === 'ok') {
-      statusEl.innerHTML = '<div class="status-indicator ok">✅ الاتصال ناجح! الربط يعمل بشكل صحيح.</div>';
-      scriptUrl = url;
-      localStorage.setItem(STORAGE_KEY, url);
-      updateCurrentUrlCard();
-    } else {
-      statusEl.innerHTML = '<div class="status-indicator error">❌ ' + (data.message||'خطأ') + '</div>';
-    }
+    statusEl.innerHTML = data.status === 'ok'
+      ? '<div class="status-indicator ok">✅ الاتصال ناجح والكود الجديد يعمل!</div>'
+      : '<div class="status-indicator error">❌ ' + (data.message||'خطأ') + '</div>';
   } catch(e) {
-    statusEl.innerHTML = '<div class="status-indicator error">❌ فشل الاتصال — تأكد من نشر الكود الجديد وإعداد "Anyone"</div>';
+    statusEl.innerHTML = '<div class="status-indicator error">❌ فشل الاتصال</div>';
   }
-}
-
-function updateCurrentUrlCard() {
-  const card = document.getElementById('current-url-card');
-  const display = document.getElementById('current-url-display');
-  if (scriptUrl) { card.style.display='block'; display.textContent=scriptUrl; }
-  else { card.style.display='none'; }
 }
 
 function copyCode() {
@@ -757,7 +874,6 @@ function copyCode() {
     .then(()=>showToast('✅ تم نسخ الكود'));
 }
 
-// ===== RESULTS =====
 function switchTab(tabId) {
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
@@ -790,7 +906,6 @@ function renderResultsTable(results) {
   const scores = results.map(r=>parseScore(r.score));
   document.getElementById('sum-avg').textContent = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)+'%';
   document.getElementById('sum-top').textContent = Math.max(...scores)+'%';
-
   const rows = results.map((r,i)=>{
     const s = parseScore(r.score);
     const cls = s>=70?'high':s>=50?'mid':'low';
@@ -802,14 +917,13 @@ function renderResultsTable(results) {
       <td style="font-size:12px;">${r.startTime||'—'}</td>
       <td style="font-size:12px;">${r.endTime||'—'}</td></tr>`;
   }).join('');
-
   document.getElementById('results-table-container').innerHTML = `<div style="overflow-x:auto;"><table class="results-table">
     <thead><tr><th>#</th><th>اسم الطالب</th><th>النتيجة</th><th>صحيح</th><th>خاطئ</th><th>الإجمالي</th><th>وقت البدء</th><th>وقت الانتهاء</th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
 }
 
 function exportExcel() {
-  if (!cachedResults || cachedResults.length === 0) { showToast('⚠️ حمّل النتائج أولاً'); return; }
+  if (!cachedResults?.length) { showToast('⚠️ حمّل النتائج أولاً'); return; }
   const wb = XLSX.utils.book_new();
   const data = [['اسم الطالب','النتيجة','الإجابات الصحيحة','إجمالي الأسئلة','وقت البدء','وقت الانتهاء']];
   cachedResults.forEach(r=>data.push([r.name,r.score,r.correct,r.total,r.startTime,r.endTime]));
@@ -819,8 +933,6 @@ function exportExcel() {
   XLSX.writeFile(wb,'نتائج_تقريب_القرآن.xlsx');
   showToast('✅ تم تصدير Excel');
 }
-
-function closeDetailModal() { document.getElementById('detail-modal').classList.remove('open'); }
 
 init();
 </script>
