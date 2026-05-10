@@ -530,7 +530,7 @@ function getOrCreateSheet(ss, name, headers) {
 
 <script>
 // ===== CONFIG (URL مثبَّت مباشرةً) =====
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXnN0T381LPK7DEimiMyMel8oLvezPTL38xY3eizFCbU6gUqzcFXYHipOAwUC6iMkafg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-yn-ybW0gBpATJv0p-2IO_4jLSlwIR1AZEwr4U4wCk07UM889T9laHujqZnrNYHbVvw/exec';
 const TEACHER_PASS = "000999";
 const EXAM_DURATION = 30 * 60; // seconds
 
@@ -774,26 +774,19 @@ async function submitExam(auto) {
   }
 
   const statusEl = document.getElementById('result-save-status');
-  try {
-    const data = await callScript({
-      action: 'saveResult',
-      name: currentStudent,
-      total: loadedQuestions.length,
-      correct,
-      score: score + '%',
-      startTime: examStartTime,
-      endTime
-    });
-    if (!auto) {
-      statusEl.textContent = data.status === 'ok' ? '✅ تم حفظ نتيجتك في سجل المعلم' : '⚠️ ' + (data.message||'خطأ');
-      statusEl.style.color = data.status === 'ok' ? 'var(--color-success)' : 'var(--color-warning)';
-    }
-  } catch(e) {
-    if (!auto) {
-      statusEl.textContent = '⚠️ لم يتم الحفظ — ' + e.message;
-      statusEl.style.color = 'var(--color-warning)';
-    }
+  if (!auto && statusEl) {
+    statusEl.textContent = '⏳ جاري حفظ نتيجتك...';
+    statusEl.style.color = 'var(--color-text-muted)';
   }
+  const payload = {
+    name: currentStudent,
+    total: loadedQuestions.length,
+    correct,
+    score: score + '%',
+    startTime: examStartTime,
+    endTime
+  };
+  await trySendWithRetry(payload, auto ? null : statusEl);
 }
 
 function showResultPage(correct, wrong, score) {
@@ -934,7 +927,117 @@ function exportExcel() {
   showToast('✅ تم تصدير Excel');
 }
 
+
+// ===== OFFLINE RESULT RECOVERY =====
+const PENDING_KEY = 'taqreeb_pending_result';
+
+function savePendingResult(payload) {
+  localStorage.setItem(PENDING_KEY, JSON.stringify(payload));
+}
+
+function clearPendingResult() {
+  localStorage.removeItem(PENDING_KEY);
+}
+
+function getPendingResult() {
+  try { return JSON.parse(localStorage.getItem(PENDING_KEY)); } catch(e) { return null; }
+}
+
+async function trySendWithRetry(payload, statusEl, maxRetries = 5) {
+  let attempt = 0;
+  savePendingResult(payload);
+
+  const tryOnce = async () => {
+    attempt++;
+    try {
+      const data = await callScript({
+        action: 'saveResult',
+        name: payload.name,
+        total: payload.total,
+        correct: payload.correct,
+        score: payload.score,
+        startTime: payload.startTime,
+        endTime: payload.endTime
+      });
+      if (data.status === 'ok') {
+        clearPendingResult();
+        if (statusEl) {
+          statusEl.textContent = '✅ تم حفظ نتيجتك في سجل المعلم';
+          statusEl.style.color = 'var(--color-success)';
+        }
+        return true;
+      }
+    } catch(e) {}
+    return false;
+  };
+
+  // Try immediately
+  if (await tryOnce()) return;
+
+  // Retry every 10 seconds
+  if (statusEl) {
+    statusEl.textContent = '⚠️ لا يوجد اتصال — سيتم إعادة المحاولة تلقائياً...';
+    statusEl.style.color = 'var(--color-warning)';
+  }
+
+  let retryCount = 0;
+  const retryInterval = setInterval(async () => {
+    retryCount++;
+    if (statusEl) {
+      statusEl.textContent = `🔄 محاولة إرسال (${retryCount}/${maxRetries})...`;
+    }
+    if (await tryOnce()) {
+      clearInterval(retryInterval);
+    } else if (retryCount >= maxRetries) {
+      clearInterval(retryInterval);
+      if (statusEl) {
+        statusEl.textContent = '⚠️ تعذّر الحفظ الآن — ستظهر لك رسالة عند عودتك للموقع لإرساله.';
+        statusEl.style.color = 'var(--color-warning)';
+      }
+    }
+  }, 10000);
+}
+
+async function checkAndSendPending() {
+  const pending = getPendingResult();
+  if (!pending) return;
+  // Show recovery banner
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999;background:#1a6b3c;color:white;padding:14px 20px;text-align:center;font-size:15px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;gap:16px;';
+  banner.innerHTML = `<span>📤 لديك نتيجة لم تُرسل للمعلم (${pending.name})</span>
+    <button onclick="sendPendingNow(this.parentElement)" style="background:white;color:#1a6b3c;border:none;padding:6px 18px;border-radius:20px;font-weight:700;cursor:pointer;font-family:var(--font-body);">إرسال الآن</button>
+    <button onclick="this.parentElement.remove();clearPendingResult();" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);padding:6px 12px;border-radius:20px;cursor:pointer;font-family:var(--font-body);">تجاهل</button>`;
+  document.body.prepend(banner);
+}
+
+async function sendPendingNow(banner) {
+  const pending = getPendingResult();
+  if (!pending) { if(banner) banner.remove(); return; }
+  if(banner) banner.innerHTML = '<span>⏳ جاري الإرسال...</span>';
+  try {
+    const data = await callScript({
+      action: 'saveResult',
+      name: pending.name,
+      total: pending.total,
+      correct: pending.correct,
+      score: pending.score,
+      startTime: pending.startTime,
+      endTime: pending.endTime
+    });
+    if (data.status === 'ok') {
+      clearPendingResult();
+      if(banner) banner.innerHTML = '<span>✅ تم إرسال نتيجتك بنجاح!</span>';
+      setTimeout(() => banner && banner.remove(), 3000);
+    } else {
+      if(banner) banner.innerHTML = '<span>❌ فشل الإرسال — حاول مرة أخرى</span>';
+    }
+  } catch(e) {
+    if(banner) banner.innerHTML = `<span>❌ لا يوجد اتصال — ${e.message}</span>`;
+  }
+}
+
 init();
+checkAndSendPending();
 </script>
 </body>
 </html>
