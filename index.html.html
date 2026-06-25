@@ -564,9 +564,14 @@ function hideLoading() { document.getElementById('global-loading').style.display
 
 async function callScript(params) {
   const url = scriptUrl + '?' + new URLSearchParams(params).toString();
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return await res.json();
+  const res = await fetch(url, { cache: 'no-store' });
+  const text = await res.text();
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    throw new Error('Response is not JSON: ' + text);
+  }
 }
 
 async function init() {
@@ -1010,6 +1015,79 @@ async function checkAndSendPending() {
   document.body.prepend(banner);
 }
 
+  async function startExam() {
+  if (!examEnabled) {
+    showToast('الاختبار موقوف حالياً');
+    return;
+  }
+
+  const name = document.getElementById('student-name-input').value.trim();
+  if (!name) {
+    showToast('⚠️ الرجاء إدخال اسمك أولاً');
+    return;
+  }
+
+  showLoading('جاري تحميل الأسئلة...');
+
+  try {
+    const questionsData = await callScript({ action: 'getQuestions' });
+
+    if (questionsData.status !== 'ok') {
+      hideLoading();
+      showToast(questionsData.message || 'فشل جلب الأسئلة');
+      return;
+    }
+
+    if (!questionsData.questions || !questionsData.questions.length) {
+      hideLoading();
+      showToast('⚠️ لا توجد أسئلة في الشيت');
+      return;
+    }
+
+    const sessionData = await callScript({ action: 'startSession', name });
+
+    if (sessionData.status === 'disabled') {
+      hideLoading();
+      examEnabled = false;
+      updateExamStatusBadge();
+      showToast('الاختبار موقوف');
+      return;
+    }
+
+    if (sessionData.status === 'expired') {
+      hideLoading();
+      showToast('⏰ انتهى وقت اختبارك مسبقاً');
+      return;
+    }
+
+    if (sessionData.status !== 'ok') {
+      hideLoading();
+      showToast(sessionData.message || 'فشل بدء الجلسة');
+      return;
+    }
+
+    loadedQuestions = questionsData.questions;
+    currentStudent = name;
+    studentAnswers = {};
+    sessionStartMs = sessionData.startTime;
+    examStartTime = new Date(sessionStartMs).toLocaleString('ar-SA');
+    timeLeft = Math.floor((sessionData.remaining || 0) / 1000);
+
+    hideLoading();
+    switchView('view-exam');
+    document.getElementById('exam-student-name').textContent = name;
+    setSyncBadge('synced', 'متزامن');
+    renderExamQuestions();
+    startTimer();
+    startSyncCheck();
+
+  } catch (e) {
+    hideLoading();
+    console.error(e);
+    showToast('خطأ: ' + e.message);
+  }
+}
+  
 async function sendPendingNow(banner) {
   const pending = getPendingResult();
   if (!pending) { if(banner) banner.remove(); return; }
